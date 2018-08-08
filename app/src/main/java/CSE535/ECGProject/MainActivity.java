@@ -1,7 +1,12 @@
 package CSE535.ECGProject;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.ArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -9,10 +14,23 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import mobilecomputing.ecgproject.R;
 
@@ -25,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     int[] value;
     int[] heartRate;
     int minute_samples;
-
+    double[] index;
+    double[] peaks;
     boolean rgflag;
+    GraphView graph;
     private RadioButton p1radio;
     private RadioButton p2radio;
     private RadioButton p3radio;
@@ -47,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         p3radio = (RadioButton) findViewById(R.id.pat3_radio);
         p4radio = (RadioButton) findViewById(R.id.pat4_radio);
         detectButton = (Button) findViewById(R.id.detectbtn);
+        graph = (GraphView) findViewById(R.id.graph);
 
         rg = (RadioGroup) findViewById(R.id.rg);
         et = (TextView) findViewById(R.id.et1);
@@ -81,8 +102,13 @@ public class MainActivity extends AppCompatActivity {
                         String line;
                         int i=0;
                         value = new int[lines];
+                        peaks = new double[lines];
+                        index = new double[lines];
                         while((line = br.readLine())!= null){
-                            value[i] = Integer.parseInt(line);
+                            //value[i] = Integer.parseInt(line);
+                            String[] split = line.split("\\s+");
+                            index[i] = Double.parseDouble(split[0]);
+                            peaks[i] = Double.parseDouble(split[1]);
                             i++;
                         }
 
@@ -90,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Bradycardia();
+                   // Bradycardia();
+                    calculateHeartRate();
                 }
                 else {
                     Toast.makeText(getApplicationContext(),
@@ -109,8 +136,81 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
+    double[] bpm;
+    public void calculateHeartRate() {
+        /*
+        %%calculating heart rate from RR method
+for i=2:length(peaks)
+    interval = pindex(i)-pindex(i-1);
+    r = interval*0.004;
+    rr = 1/r;
+    bpm(i-1) = rr*60;
+end
+         */
+        bpm = new double[lines];
+        for(int i=1;i<peaks.length;i++) {
+            double interval = index[i] - index[i-1];
+            double r = interval*0.004;
+            double rr = 0;
+            if(r!=0) {
+                rr = 1/r;
+                bpm[i] = rr*60;
+            } else {
+                bpm[i] = 500;
+            }
 
-    public void Bradycardia(){
+            Log.d("msg",bpm[i]+" ");
+        }
+
+        //clean heart rate
+
+        Map<Double,Double> heartRate = new TreeMap<>();
+        for(int i=0;i<bpm.length;i++){
+            if(bpm[i]>=0 &&bpm[i]<=300) {
+                heartRate.put(index[i],bpm[i]);
+            }
+        }
+
+        Iterator it = heartRate.entrySet().iterator();
+        LineGraphSeries<DataPoint> c = new LineGraphSeries<>();
+
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            c.appendData(new DataPoint(Double.parseDouble(pair.getKey().toString())/(frequency*60),Double.parseDouble(pair.getValue().toString())),true,999999);
+
+        }
+
+        graph.getViewport().setScalable(true);
+        graph.getViewport().setScalableY(true);
+        graph.addSeries(c);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(400);
+        graph.getViewport().setMaxX(Double.parseDouble(heartRate.keySet().toArray()[heartRate.size()-1].toString())/(frequency*60));
+        boolean seq = true;
+        ArrayList<Double> heartR = new ArrayList<>(heartRate.values());
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for(int i=0;i<heartR.size();i++) {
+            for (int j=i+1;j<heartR.size();j++) {
+                if(heartR.get(j) < 60 && seq) {
+
+                } else {
+                    seq = false;
+                }
+                if(!seq) {
+                    indexes.add(i);
+                    indexes.add(j-1);
+                    i=j+1;
+                    seq = true;
+                    break;
+                }
+            }
+        }
+        Log.e("msg",Arrays.deepToString(indexes.toArray())+"");
+    }
+
+
+    /*public void Bradycardia(){
         int brc_count =0;
         boolean Flag = false;
         int max_bc =0;
@@ -195,5 +295,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_LONG).show();
         }
         et.setText(txt);
-    }
+    }*/
+
 }
