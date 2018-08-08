@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mobilecomputing.ecgproject.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/section_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Data:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="27sp"
+                tools:layout_constraintLeft_creator="1"
+                tools:layout_constraintTop_creator="1"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <RadioGroup
+
+                android:id="@+id/rg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/pat1_radio"
+                    android:layout_width="143dp"
+                    android:layout_height="40dp"
+                    android:checked="false"
+                    android:text="Amine"
+                    android:textSize="24sp"
+                    tools:layout_editor_absoluteX="27dp"
+                    tools:layout_editor_absoluteY="70dp" />
+
+                <RadioButton
+                    android:id="@+id/pat2_radio"
+                    android:layout_width="135dp"
+                    android:layout_height="46dp"
+                    android:text="Shubham"
+                    android:textSize="24sp"
+                    tools:layout_editor_absoluteX="27dp"
+                    tools:layout_editor_absoluteY="117dp" />
+
+                <RadioButton
+                    android:id="@+id/pat3_radio"
+                    android:layout_width="143dp"
+                    android:layout_height="39dp"
+                    android:text="Harshita"
+                    android:textSize="24sp"
+                    tools:layout_editor_absoluteX="27dp"
+                    tools:layout_editor_absoluteY="166dp" />
+
+                <RadioButton
+                    android:id="@+id/pat4_radio"
+                    android:layout_width="178dp"
+                    android:layout_height="39dp"
+                    android:text="Chiranjeevi"
+                    android:textSize="24sp"
+                    tools:layout_editor_absoluteX="27dp"
+                    tools:layout_editor_absoluteY="166dp" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/detectbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DETECT"
+                tools:layout_editor_absoluteX="85dp"
+                tools:layout_editor_absoluteY="281dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/et1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="18dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>
