@@ -151,6 +151,7 @@ for i=2:length(peaks)
 end
          */
         long startTime = System.currentTimeMillis();
+        graph.removeAllSeries();
         bpm = new double[lines];
         for(int i=1;i<peaks.length;i++) {
             double interval = index[i] - index[i-1];
@@ -227,13 +228,13 @@ end
 
 
         double timeUnder60 = 0;
-        for(int i=0;i<indexes.size()-1;i++) {
-            timeUnder60 = timeUnder60  + (index[indexes.get(i+1)]-index[indexes.get(i)])*0.004/60;
+        for(int i=0;i<indexes.size()-1;i=i+2) {
+
+            timeUnder60 = timeUnder60  + (index[indexes.get(i+1)]-index[indexes.get(i)])*(0.004/60);
 
         }
         double totalTime = (index[index.length-1] -0 )*0.004/60;
         double percentageUnder60 = timeUnder60/totalTime* 100;
-        Log.e("msg",percentageUnder60+" ");
 
 
 
