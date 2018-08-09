@@ -1,6 +1,7 @@
 package CSE535.ECGProject;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ import java.util.TreeMap;
 import mobilecomputing.ecgproject.R;
 
 import static java.lang.StrictMath.max;
+import static java.lang.StrictMath.round;
 
 public class MainActivity extends AppCompatActivity {
     String[] values;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton p3radio;
     private RadioButton p4radio;
     private Button detectButton;
+    private TextView tv_status;
     private RadioGroup rg;
     private String file_name = "";
     private int lines = 0;
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         p4radio = (RadioButton) findViewById(R.id.pat4_radio);
         detectButton = (Button) findViewById(R.id.detectbtn);
         graph = (GraphView) findViewById(R.id.graph);
-
+        tv_status = (TextView) findViewById(R.id.tv_status);
         rg = (RadioGroup) findViewById(R.id.rg);
         et = (TextView) findViewById(R.id.et1);
 
@@ -147,6 +150,7 @@ for i=2:length(peaks)
     bpm(i-1) = rr*60;
 end
          */
+        long startTime = System.currentTimeMillis();
         bpm = new double[lines];
         for(int i=1;i<peaks.length;i++) {
             double interval = index[i] - index[i-1];
@@ -170,26 +174,40 @@ end
                 heartRate.put(index[i],bpm[i]);
             }
         }
+        ArrayList<Double> heartR = new ArrayList<>(heartRate.values());
 
+        ArrayList<Double> time = new ArrayList<>(heartRate.keySet());
+
+        double average  = 0;
+        for(int i=0;i<heartR.size();i++) {
+            average = average  + heartR.get(i);
+        }
+        average = average / heartR.size();
+        LineGraphSeries k = new LineGraphSeries();
+
+
+        k.setColor(Color.RED);
         Iterator it = heartRate.entrySet().iterator();
         LineGraphSeries<DataPoint> c = new LineGraphSeries<>();
 
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            c.appendData(new DataPoint(Double.parseDouble(pair.getKey().toString())/(frequency*60),Double.parseDouble(pair.getValue().toString())),true,999999);
-
+            c.appendData(new DataPoint(Double.parseDouble(pair.getKey().toString())/(frequency*60),
+                    Double.parseDouble(pair.getValue().toString())),true,999999);
+            k.appendData(new DataPoint(Double.parseDouble(pair.getKey().toString())/(frequency*60),
+                    average),true,999999);
         }
 
         graph.getViewport().setScalable(true);
         graph.getViewport().setScalableY(true);
         graph.addSeries(c);
+        graph.addSeries(k);
         graph.getViewport().setMinX(0);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(400);
         graph.getViewport().setMaxX(Double.parseDouble(heartRate.keySet().toArray()[heartRate.size()-1].toString())/(frequency*60));
         boolean seq = true;
-        ArrayList<Double> heartR = new ArrayList<>(heartRate.values());
-        ArrayList<Integer> indexes = new ArrayList<>();
+       ArrayList<Integer> indexes = new ArrayList<>();
         for(int i=0;i<heartR.size();i++) {
             for (int j=i+1;j<heartR.size();j++) {
                 if(heartR.get(j) < 60 && seq) {
@@ -206,7 +224,25 @@ end
                 }
             }
         }
-        Log.e("msg",Arrays.deepToString(indexes.toArray())+"");
+
+
+        double timeUnder60 = 0;
+        for(int i=0;i<indexes.size()-1;i++) {
+            timeUnder60 = timeUnder60  + (index[indexes.get(i+1)]-index[indexes.get(i)])*0.004/60;
+
+        }
+        double totalTime = (index[index.length-1] -0 )*0.004/60;
+        double percentageUnder60 = timeUnder60/totalTime* 100;
+        Log.e("msg",percentageUnder60+" ");
+
+
+
+
+
+        long difference = System.currentTimeMillis() - startTime;
+        tv_status.setText("Total Time : " + round(totalTime)+"\nTime With Heart Rate Under 60 bpm : " + round(timeUnder60) +  "\n" +
+                "Percentage : " + round(percentageUnder60) +"%" +"\nAverage Heart Rate : " + round(average) + "\nExecution Time : " + difference + " msec");
+
     }
 
 

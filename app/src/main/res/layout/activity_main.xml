@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="mobilecomputing.ecgproject.MainActivity">
-
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
@@ -53,7 +56,7 @@
                     android:layout_height="40dp"
                     android:checked="false"
                     android:text="Amine"
-                    android:textSize="24sp"
+                    android:textSize="17sp"
                     tools:layout_editor_absoluteX="27dp"
                     tools:layout_editor_absoluteY="70dp" />
 
@@ -62,7 +65,7 @@
                     android:layout_width="135dp"
                     android:layout_height="46dp"
                     android:text="Shubham"
-                    android:textSize="24sp"
+                    android:textSize="17sp"
                     tools:layout_editor_absoluteX="27dp"
                     tools:layout_editor_absoluteY="117dp" />
 
@@ -71,7 +74,7 @@
                     android:layout_width="143dp"
                     android:layout_height="39dp"
                     android:text="Harshita"
-                    android:textSize="24sp"
+                    android:textSize="17sp"
                     tools:layout_editor_absoluteX="27dp"
                     tools:layout_editor_absoluteY="166dp" />
 
@@ -80,7 +83,7 @@
                     android:layout_width="178dp"
                     android:layout_height="39dp"
                     android:text="Chiranjeevi"
-                    android:textSize="24sp"
+                    android:textSize="17sp"
                     tools:layout_editor_absoluteX="27dp"
                     tools:layout_editor_absoluteY="166dp" />
             </RadioGroup>
@@ -122,10 +125,19 @@
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="150dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/ll" />
+        android:layout_margin="8dp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_height="wrap_content"
+        android:text="Status Of Patient"
+        />
+</LinearLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+</ScrollView>
